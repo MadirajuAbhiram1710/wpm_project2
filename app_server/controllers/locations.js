@@ -41,9 +41,6 @@ res.render('location-info', { title: 'Location info' });
 const addReview = (req, res) => {
 res.render('location-review-form', { title: 'Add review' });
 };
-const about = (req, res) => {
- res.render('generic-text', { title: 'About' });
-};
 module.exports = {
 homelist,
 locationInfo,
