@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const dbURI = 'mongodb://localhost/Loc8r';
-mongoose.connect(dbURI, { useNewUrlParser: true });
+mongoose.connect(dbURI);
 
 // CONNECTION EVENTS
 mongoose.connection.on('connected', () => {
@@ -18,10 +18,15 @@ mongoose.connection.on('disconnected', () => {
 
 // GRACEFUL SHUTDOWN
 const gracefulShutdown = (msg, callback) => {
-  mongoose.connection.close(() => {
-    console.log(`Mongoose disconnected through ${msg}`);
-    callback();
-  });
+  mongoose.connection.close()
+    .then(() => {
+      console.log(`Mongoose disconnected through ${msg}`);
+      if (typeof callback === 'function') callback();
+    })
+    .catch(err => {
+      console.error('Error during mongoose.disconnect():', err);
+      if (typeof callback === 'function') callback(err);
+    });
 };
 
 // For nodemon restarts

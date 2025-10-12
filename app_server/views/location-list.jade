@@ -1,0 +1,40 @@
+extends layout
+
+block content
+  // Banner
+  .row.bg-light.py-4.mb-4
+    .col-12.text-center
+      h1.display-5= pageHeader.title
+      if pageHeader.strapline
+        p.lead.text-muted= pageHeader.strapline
+
+  .row
+    // Main content (locations)
+    .col-12.col-md-8
+      if locations.length
+        each location in locations
+          .card.mb-3.shadow-sm
+            .card-body
+              h4.card-title
+                a(href="/location", class="text-decoration-none text-dark")= location.name
+                small.ms-2
+                  - var fullStars = location.rating || 0;
+                  - var emptyStars = 5 - fullStars;
+                  each _ in [].constructor(fullStars)
+                    i.fas.fa-star.text-warning
+                  each _ in [].constructor(emptyStars)
+                    i.far.fa-star.text-warning
+              span.badge.bg-secondary.float-end= location.distance
+              p.card-text.address.mt-2= location.address
+              p.facilities
+                each facility in location.facilities
+                  span.badge.bg-warning.text-dark.me-1.mb-1= facility
+      else
+        p.text-center.text-muted No locations found.
+
+    // Sidebar
+    .col-12.col-md-4
+      .card.bg-light.shadow-sm
+        .card-body
+          h5 Sidebar
+          p.lead= sidebar

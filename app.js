@@ -33,6 +33,9 @@ app.use(function(err, req, res, next) {
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
 
+  // also log the error stack to the console for debugging
+  console.error(err && err.stack ? err.stack : err);
+
   // render the error page
   res.status(err.status || 500);
   res.render('error', { title: 'Error' });
