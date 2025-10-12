@@ -1,9 +1,9 @@
 const mongoose = require('mongoose');
+require('./location'); // <-- fixed filename
 
 const dbURI = 'mongodb://localhost/Loc8r';
-mongoose.connect(dbURI);
+mongoose.connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true });
 
-// CONNECTION EVENTS
 mongoose.connection.on('connected', () => {
   console.log(`Mongoose connected to ${dbURI}`);
 });
@@ -16,34 +16,28 @@ mongoose.connection.on('disconnected', () => {
   console.log('Mongoose disconnected');
 });
 
-// GRACEFUL SHUTDOWN
 const gracefulShutdown = (msg, callback) => {
-  mongoose.connection.close()
-    .then(() => {
-      console.log(`Mongoose disconnected through ${msg}`);
-      if (typeof callback === 'function') callback();
-    })
-    .catch(err => {
-      console.error('Error during mongoose.disconnect():', err);
-      if (typeof callback === 'function') callback(err);
-    });
+  mongoose.connection.close(() => {
+    console.log(`Mongoose disconnected through ${msg}`);
+    callback();
+  });
 };
 
-// For nodemon restarts
+// Nodemon restart
 process.once('SIGUSR2', () => {
   gracefulShutdown('nodemon restart', () => {
     process.kill(process.pid, 'SIGUSR2');
   });
 });
 
-// For app termination
+// App termination
 process.on('SIGINT', () => {
   gracefulShutdown('app termination', () => {
     process.exit(0);
   });
 });
 
-// For Heroku app termination
+// Heroku app termination
 process.on('SIGTERM', () => {
   gracefulShutdown('Heroku app shutdown', () => {
     process.exit(0);
