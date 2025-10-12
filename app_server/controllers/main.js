@@ -1,6 +1,7 @@
-const index = (req, res) => {
-res.render('index', { title: 'Loca8r' });
-};
-module.exports = {
-index
-};
+ /* GET homepage */
+ const index = (req, res) => {
+  res.render('index', { title: 'careercompass' });
+ };
+  module.exports = {
+  index
+ };
